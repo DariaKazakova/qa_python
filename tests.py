@@ -65,3 +65,4 @@ class TestBooksCollector:
         assert collector.favorites == ['Тихий Дон']
         collector.delete_book_from_favorites('Тихий Дон')
         assert collector.favorites == []
+
