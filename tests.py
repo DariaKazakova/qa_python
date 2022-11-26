@@ -1,24 +1,67 @@
 from main import BooksCollector
 
-# класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
-# обязательно указывать префикс Test
 class TestBooksCollector:
-
-    # пример теста:
-    # обязательно указывать префикс test_
-    # дальше идет название метода, который тестируем add_new_book_
-    # затем, что тестируем add_two_books - добавление двух книг
-    def test_add_new_book_add_two_books(self):
-        # создаем экземпляр (объект) класса BooksCollector
+    def test_add_book_true(self):
         collector = BooksCollector()
+        collector.add_new_book('Война и Мир')
+        assert collector.favorites == []
+        assert collector.books_rating == {'Война и Мир': 1}
 
-        # добавляем две книги
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Что делать, если ваш кот хочет вас убить')
+    def test_add_the_same_book_twice_false(self):
+        collector = BooksCollector()
+        collector.add_new_book('Преступление и Наказание')
+        collector.add_new_book('Преступление и Наказание')
+        assert collector.favorites == []
+        assert collector.books_rating == {'Преступление и Наказание': 1}
 
-        # проверяем, что добавилось именно две
-        # словарь books_rating, который нам возвращает метод get_books_rating, имеет длину 2
-        assert len(collector.get_books_rating()) == 2
+    def test_set_book_rating_for_book_not_in_list_false(self):
+        collector = BooksCollector()
+        collector.set_book_rating('Aнна Каренина', 10)
+        assert collector.favorites == []
+        assert collector.books_rating != {'Анна Каренина': 10} and collector.books_rating == {}
 
-    # напиши свои тесты ниже
-    # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
+    def test_set_book_rating_less_than_one_false(self):
+        collector = BooksCollector()
+        collector.add_new_book('Ведьмак')
+        collector.set_book_rating('Ведьмак', 0)
+        assert collector.favorites == []
+        assert collector.books_rating != {'Ведьмак': 0} and collector.books_rating == {'Ведьмак': 1}
+
+    def test_set_book_rating_more_than_ten_false(self):
+        collector = BooksCollector()
+        collector.add_new_book('Шерлок Холмс')
+        collector.set_book_rating('Шерлок Холмс', 11)
+        assert collector.favorites == []
+        assert collector.books_rating != {'Шерлок Холмс': 11} and collector.books_rating == {'Шерлок Холмс': 1}
+
+    def test_get_book_not_in_list_rating_false(self):
+        collector = BooksCollector()
+        assert collector.get_book_rating('Великий Гэтсби') == None
+
+    def test_get_books_with_specific_rating_true(self):
+        collector = BooksCollector()
+        collector.add_new_book('Оливер Твист')
+        collector.set_book_rating('Оливер Твист', 9)
+        collector.add_new_book('Идиот')
+        collector.add_new_book('Дюймовочка')
+        collector.set_book_rating('Дюймовочка', 10)
+        assert collector.get_books_with_specific_rating(9) == ['Оливер Твист']
+
+    def test_add_book_in_favorites_true(self):
+        collector = BooksCollector()
+        collector.add_new_book('Ромео и Джульетта')
+        collector.add_book_in_favorites('Ромео и Джульетта')
+        assert collector.favorites == ['Ромео и Джульетта']
+
+    def test_book_not_in_list_add_in_favorites_false(self):
+        collector = BooksCollector()
+        collector.add_book_in_favorites('Тихий Дон')
+        assert collector.favorites != ['Тихий Дон'] and collector.favorites == []
+
+    def test_delete_book_from_favorite_true(self):
+        collector = BooksCollector()
+        collector.add_new_book('Тихий Дон')
+        collector.add_book_in_favorites('Тихий Дон')
+        assert collector.favorites == ['Тихий Дон']
+        collector.delete_book_from_favorites('Тихий Дон')
+        assert collector.favorites == []
