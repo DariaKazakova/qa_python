@@ -58,4 +58,4 @@ class TestBooksCollector:
         collector.add_new_book('Тихий Дон')
         collector.add_book_in_favorites('Тихий Дон')
         collector.delete_book_from_favorites('Тихий Дон')
-        assert collector.favorites == []
+        assert collector.favorites == [] 
